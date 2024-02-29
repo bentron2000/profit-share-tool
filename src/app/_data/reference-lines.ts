@@ -2,6 +2,7 @@
 import type { ChartReferenceLineProps } from '@mantine/charts'
 import { ChartSettings } from './chart-settings'
 import { SeriesData, exists } from './use-chart-data'
+import { set } from 'ramda'
 
 export const milestonesToReferenceLines =
   (data: SeriesData[]) =>
@@ -19,7 +20,9 @@ export const milestonesToReferenceLines =
         if (milestone.basis === 'sales') {
           if (milestone.basisPercentage) {
             return {
-              x: Math.round(milestone.basisPercentage * settings.editionSize),
+              x: Math.round(
+                milestone.basisPercentage * settings.numItemsToSell
+              ),
               label: milestone.label,
               color: 'blue.6',
               strokeDasharray: '3 3'
@@ -36,7 +39,7 @@ export const milestonesToReferenceLines =
         if (milestone.basis === 'revenue') {
           if (milestone.basisPercentage) {
             // find the sale number that corresponds to this percentage of total revenue
-            const totalRevenue = settings.salePrice * settings.editionSize
+            const totalRevenue = settings.salePrice * settings.numItemsToSell
             const revenueThreshold = milestone.basisPercentage * totalRevenue
             const saleNumber = revenueThreshold / settings.salePrice
             return {
@@ -86,5 +89,17 @@ export const milestonesToReferenceLines =
       .filter(exists)
     const lines = [...staticLines, ...milestoneLines]
     console.log({ lines, data, settings })
+    const milestones = settings.milestones
+    const asSerializable = Array.from(milestones.entries())
+    const serialized = JSON.stringify(asSerializable)
+    const fromSerialized = JSON.parse(serialized)
+    const backToMap = new Map(fromSerialized)
+    console.log('derp', {
+      milestones,
+      asSerializable,
+      serialized,
+      fromSerialized,
+      backToMap
+    })
     return lines
   }

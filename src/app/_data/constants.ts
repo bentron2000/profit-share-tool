@@ -1,4 +1,5 @@
 import { LineChartSeries } from '@mantine/charts'
+import { Milestone } from './chart-settings'
 
 export const series = [
   {
@@ -13,10 +14,46 @@ export const series = [
     color: 'red.2'
   },
   { name: 'costsRecovered', label: 'Costs Recovered', color: 'red.1' },
-  { name: 'moncoeurShare', label: 'Moncoeur Share', color: 'orange.6' },
-  { name: 'artistShare', label: 'Artist Share', color: 'green.4' }
+  { name: 'companyShare', label: 'Moncoeur Share', color: 'orange.6' },
+  { name: 'partnerShare', label: 'Artist Share', color: 'green.4' }
 ] satisfies LineChartSeries[]
 
 export type SeriesNames = (typeof series)[number]['name']
 
 export const dataKey = 'saleNumber'
+
+const DEFAULT_MILESTONE = new Map([
+  [
+    0,
+    {
+      milestoneNumber: 0,
+      label: 'First Sale',
+      basis: 'sales',
+      basisPercentage: 0,
+      costComponent: 0.8,
+      partnerShare: 0,
+      companyShare: 1,
+      sharedDiscount: 0,
+      partnerDiscount: 0,
+      companyDiscount: 0
+    }
+  ]
+])
+
+const DEFAULT_NUM_ITEMS = 500
+const DEFAULT_SALE_PRICE = 30
+
+export const DEFAULT_SETTINGS = {
+  listEntry: {
+    id: 'default-item',
+    name: 'Basic Settings',
+    description: 'Default settings for the chart.'
+  },
+  settings: {
+    numItemsToSell: DEFAULT_NUM_ITEMS,
+    salePrice: DEFAULT_SALE_PRICE,
+    editionCosts: DEFAULT_NUM_ITEMS * DEFAULT_SALE_PRICE * 0.2,
+    allCostsRecoupedBy: DEFAULT_NUM_ITEMS,
+    milestones: DEFAULT_MILESTONE
+  }
+}

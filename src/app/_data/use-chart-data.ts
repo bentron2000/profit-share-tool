@@ -11,8 +11,11 @@ export type SeriesData = Record<SeriesNames | OtherKeys, number>
 export const exists = <T>(n?: T | null): n is T => Boolean(n)
 
 export const calculateSeries = (settings: ChartSettings) => {
-  // create a new array containing the integers from 1 to editionSize
-  const newArray = Array.from({ length: settings.editionSize }, (_, i) => i + 1)
+  // create a new array containing the integers from 1 to numItemsToSell
+  const newArray = Array.from(
+    { length: settings.numItemsToSell },
+    (_, i) => i + 1
+  )
 
   const data = newArray.reduce<SeriesData[]>((acc, saleNumber) => {
     const previous = last(acc)
@@ -24,8 +27,8 @@ export const calculateSeries = (settings: ChartSettings) => {
       settings.salePrice *
         sum(
           filter(exists, [
-            milestone?.artistDiscount,
-            milestone?.moncoeurDiscount,
+            milestone?.partnerDiscount,
+            milestone?.companyDiscount,
             milestone?.sharedDiscount
           ])
         )
@@ -39,30 +42,30 @@ export const calculateSeries = (settings: ChartSettings) => {
 
     const grossMargin = revenue - costComponent
 
-    const rawArtistShare = grossMargin * (milestone?.artistShare || 0)
-    const rawMoncoeurShare = grossMargin * (milestone?.moncoeurShare || 0)
+    const rawpartnerShare = grossMargin * (milestone?.partnerShare || 0)
+    const rawcompanyShare = grossMargin * (milestone?.companyShare || 0)
 
-    const hasArtistDiscount = !!milestone?.artistDiscount
-    const hasMoncoeurDiscount = !!milestone?.moncoeurDiscount
+    const haspartnerDiscount = !!milestone?.partnerDiscount
+    const hascompanyDiscount = !!milestone?.companyDiscount
 
     // if the artist provided a discount, but moncoeur did not, we need to reduce the artist share by that amount and add it to the moncoeur share
-    const artistDiscountComponent = hasArtistDiscount
-      ? rawArtistShare * milestone.artistDiscount
+    const partnerDiscountComponent = haspartnerDiscount
+      ? rawpartnerShare * milestone.partnerDiscount
       : 0
     // if moncoeur provided a discount, but the artist did not, we need to reduce the moncoeur share by that amount and add it to the artist share
-    const moncoeurDiscountComponent = hasMoncoeurDiscount
-      ? rawMoncoeurShare * milestone.moncoeurDiscount
+    const companyDiscountComponent = hascompanyDiscount
+      ? rawcompanyShare * milestone.companyDiscount
       : 0
 
-    const netArtistShare =
-      rawArtistShare -
-      artistDiscountComponent +
-      (hasMoncoeurDiscount ? moncoeurDiscountComponent : 0)
+    const netpartnerShare =
+      rawpartnerShare -
+      partnerDiscountComponent +
+      (hascompanyDiscount ? companyDiscountComponent : 0)
 
-    const netMoncoeurShare =
-      rawMoncoeurShare -
-      moncoeurDiscountComponent +
-      (hasArtistDiscount ? artistDiscountComponent : 0)
+    const netcompanyShare =
+      rawcompanyShare -
+      companyDiscountComponent +
+      (haspartnerDiscount ? partnerDiscountComponent : 0)
 
     const costsRemaining = previous?.costsRemaining
       ? previous.costsRemaining - costComponent
@@ -75,12 +78,12 @@ export const calculateSeries = (settings: ChartSettings) => {
         : costComponent,
       costsRemaining,
       revenue: previous?.revenue ? previous.revenue + revenue : revenue,
-      artistShare: previous?.artistShare
-        ? previous.artistShare + netArtistShare
-        : netArtistShare,
-      moncoeurShare: previous?.moncoeurShare
-        ? previous.moncoeurShare + netMoncoeurShare
-        : netMoncoeurShare,
+      partnerShare: previous?.partnerShare
+        ? previous.partnerShare + netpartnerShare
+        : netpartnerShare,
+      companyShare: previous?.companyShare
+        ? previous.companyShare + netcompanyShare
+        : netcompanyShare,
       milestoneId: milestone?.milestoneNumber || 0
     }
     return [...acc, thedata]
@@ -139,7 +142,7 @@ function getMileStone(
     }
     if (
       typeof nextMilestone.basisPercentage === 'number' &&
-      saleNumber / settings.editionSize >= nextMilestone.basisPercentage
+      saleNumber / settings.numItemsToSell >= nextMilestone.basisPercentage
     ) {
       return nextMilestone
     }
@@ -174,7 +177,7 @@ function getMileStone(
     }
     if (
       typeof nextMilestone.basisPercentage === 'number' &&
-      revenue / (settings.salePrice * settings.editionSize) >=
+      revenue / (settings.salePrice * settings.numItemsToSell) >=
         nextMilestone.basisPercentage
     ) {
       return nextMilestone

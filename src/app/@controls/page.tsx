@@ -11,8 +11,8 @@ import {
 } from '../_data/chart-settings'
 export default function ControlsPage() {
   const {
-    editionSize,
-    setEditionSize,
+    numItemsToSell,
+    setnumItemsToSell,
     salePrice,
     setSalePrice,
     editionCosts,
@@ -28,8 +28,8 @@ export default function ControlsPage() {
         <p className='text-xl font-bold'>Controls</p>
         <div className='flex flex-col gap-10'>
           <ValueSlider
-            value={editionSize}
-            onChange={setEditionSize}
+            value={numItemsToSell}
+            onChange={setnumItemsToSell}
             title='Edition Size'
             min={100}
             max={1000}
@@ -53,7 +53,7 @@ export default function ControlsPage() {
             value={allCostsRecoupedBy}
             onChange={setallCostsRecoupedBy}
             min={0} // the total number of items minus
-            max={editionSize}
+            max={numItemsToSell}
             step={1}
             title='Recoup all costs by sale #'
           />
@@ -151,11 +151,11 @@ function MilestoneSettings({ milestone }: { milestone: Milestone }) {
         )}
       </div>
       <ValueSlider
-        value={milestone.artistShare}
+        value={milestone.partnerShare}
         onChange={value => {
           updateMilestone({
-            artistShare: value,
-            moncoeurShare: 1 - value
+            partnerShare: value,
+            companyShare: 1 - value
           })
         }}
         min={0} // the total number of items minus
@@ -165,7 +165,7 @@ function MilestoneSettings({ milestone }: { milestone: Milestone }) {
         title='Artist Share'
       />
       <ValueSlider
-        value={milestone.moncoeurShare}
+        value={milestone.companyShare}
         label={value => `${(value * 100).toFixed(0)}%`}
         min={0}
         max={1}
@@ -254,9 +254,9 @@ function getMinMax(
     case 'costs':
       return [0, settings.editionCosts]
     case 'revenue':
-      return [0, settings.salePrice * settings.editionSize]
+      return [0, settings.salePrice * settings.numItemsToSell]
     case 'sales':
-      return [0, settings.editionSize]
+      return [0, settings.numItemsToSell]
     default:
       return [0, 0]
   }

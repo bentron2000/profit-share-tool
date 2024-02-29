@@ -21,7 +21,7 @@ export default function ChartPage() {
     [data, settings]
   )
 
-  const { editionSize, salePrice, editionCosts } = settings
+  const { numItemsToSell, salePrice, editionCosts } = settings
 
   const [show, setShow] = useState<Set<string>>(
     new Set(series.map(prop('name')))
@@ -85,7 +85,7 @@ export default function ChartPage() {
         <p>
           Total Possible Revenue:
           {` $${new Intl.NumberFormat('en-AU').format(
-            salePrice * editionSize
+            salePrice * numItemsToSell
           )}`}
         </p>
         <p>
