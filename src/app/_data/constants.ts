@@ -1,5 +1,6 @@
 import { LineChartSeries } from '@mantine/charts'
-import { Milestone } from './chart-settings'
+import { SettingsListItem } from './persistence'
+import { ChartSettings } from './chart-settings'
 
 export const series = [
   {
@@ -40,20 +41,21 @@ const DEFAULT_MILESTONE = new Map([
   ]
 ])
 
-const DEFAULT_NUM_ITEMS = 500
-const DEFAULT_SALE_PRICE = 30
+export const DEFAULT_NUM_ITEMS = 500
+export const DEFAULT_SALE_PRICE = 30
+export const DEFAULT_ITEM_KEY = 'default-item'
 
 export const DEFAULT_SETTINGS = {
   listEntry: {
-    id: 'default-item',
-    name: 'Basic Settings',
+    value: DEFAULT_ITEM_KEY,
+    label: 'Basic Settings',
     description: 'Default settings for the chart.'
-  },
+  } satisfies SettingsListItem,
   settings: {
     numItemsToSell: DEFAULT_NUM_ITEMS,
     salePrice: DEFAULT_SALE_PRICE,
     editionCosts: DEFAULT_NUM_ITEMS * DEFAULT_SALE_PRICE * 0.2,
     allCostsRecoupedBy: DEFAULT_NUM_ITEMS,
     milestones: DEFAULT_MILESTONE
-  }
-}
+  } as ChartSettings
+} as const

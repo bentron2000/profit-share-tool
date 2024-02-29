@@ -88,18 +88,5 @@ export const milestonesToReferenceLines =
       })
       .filter(exists)
     const lines = [...staticLines, ...milestoneLines]
-    console.log({ lines, data, settings })
-    const milestones = settings.milestones
-    const asSerializable = Array.from(milestones.entries())
-    const serialized = JSON.stringify(asSerializable)
-    const fromSerialized = JSON.parse(serialized)
-    const backToMap = new Map(fromSerialized)
-    console.log('derp', {
-      milestones,
-      asSerializable,
-      serialized,
-      fromSerialized,
-      backToMap
-    })
     return lines
   }

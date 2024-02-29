@@ -9,6 +9,7 @@ import {
   basisOptions,
   chartSettings
 } from '../_data/chart-settings'
+import { SettingsListItem, getList } from '../_data/persistence'
 export default function ControlsPage() {
   const {
     numItemsToSell,
@@ -26,6 +27,7 @@ export default function ControlsPage() {
     <div className='h-screen overflow-scroll'>
       <div className='flex flex-col gap-5  p-3'>
         <p className='text-xl font-bold'>Controls</p>
+        <LoadSave />
         <div className='flex flex-col gap-10'>
           <ValueSlider
             value={numItemsToSell}
@@ -260,4 +262,25 @@ function getMinMax(
     default:
       return [0, 0]
   }
+}
+
+const list = getList()
+
+function LoadSave() {
+  const [currentSettings, setCurrentSettings] = useState<
+    SettingsListItem | null | undefined
+  >(list[0])
+
+  return (
+    <>
+      <Select
+        label='Milestone Basis'
+        data={list}
+        value={currentSettings?.value}
+        onChange={(_, option) => {
+          console.log({ item: option })
+        }}
+      />
+    </>
+  )
 }
