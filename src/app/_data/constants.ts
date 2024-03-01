@@ -1,6 +1,7 @@
 import { LineChartSeries } from '@mantine/charts'
 import { SettingsListItem } from './persistence'
-import { ChartSettings } from './chart-settings'
+import { ChartSettings, Milestone } from './chart-settings'
+import { prop } from 'ramda'
 
 export const series = [
   {
@@ -23,27 +24,25 @@ export type SeriesNames = (typeof series)[number]['name']
 
 export const dataKey = 'saleNumber'
 
-const DEFAULT_MILESTONE = new Map([
-  [
-    0,
-    {
-      milestoneNumber: 0,
-      label: 'First Sale',
-      basis: 'sales',
-      basisPercentage: 0,
-      costComponent: 0.8,
-      partnerShare: 0,
-      companyShare: 1,
-      sharedDiscount: 0,
-      partnerDiscount: 0,
-      companyDiscount: 0
-    }
-  ]
-])
+const DEFAULT_MILESTONE = {
+  0: {
+    milestoneNumber: 0,
+    label: 'Starting Milestone',
+    basis: 'sales',
+    basisTotal: 1,
+    costComponent: 1,
+    partnerShare: 0,
+    companyShare: 1,
+    sharedDiscount: 0,
+    partnerDiscount: 0,
+    companyDiscount: 0
+  } satisfies Milestone
+}
 
 export const DEFAULT_NUM_ITEMS = 500
 export const DEFAULT_SALE_PRICE = 30
 export const DEFAULT_ITEM_KEY = 'default-item'
+export const DEFAULT_DISPLAY_DATA = series.map(prop('name'))
 
 export const DEFAULT_SETTINGS = {
   listEntry: {
@@ -56,6 +55,7 @@ export const DEFAULT_SETTINGS = {
     salePrice: DEFAULT_SALE_PRICE,
     editionCosts: DEFAULT_NUM_ITEMS * DEFAULT_SALE_PRICE * 0.2,
     allCostsRecoupedBy: DEFAULT_NUM_ITEMS,
-    milestones: DEFAULT_MILESTONE
-  } as ChartSettings
+    milestones: DEFAULT_MILESTONE,
+    dataToDisplay: DEFAULT_DISPLAY_DATA
+  } satisfies Partial<ChartSettings>
 } as const

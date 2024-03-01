@@ -1,47 +1,50 @@
-import { ReactNode } from "react";
-import type { Metadata } from "next";
-import { ColorSchemeScript, createTheme, MantineProvider } from "@mantine/core";
-import { Comfortaa } from "next/font/google";
+import { ReactNode } from 'react'
+import type { Metadata } from 'next'
+import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core'
+import { Comfortaa } from 'next/font/google'
 
-import "./globals.css";
-import '@mantine/charts/styles.css';
-import '@mantine/core/styles.css';
+import './globals.css'
+import '@mantine/charts/styles.css'
+import '@mantine/core/styles.css'
+import '@mantine/notifications/styles.css'
+import { Notifications } from '@mantine/notifications'
 
 const comfortaa = Comfortaa({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-comfortaa",
-  display: "swap",
-});
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-comfortaa',
+  display: 'swap'
+})
 
 export const metadata: Metadata = {
-  title: "Profit Share Tool",
+  title: 'Profit Share Tool',
   description:
-    "A little tool to help you understand different profit share scenarios.",
-};
+    'A little tool to help you understand different profit share scenarios.'
+}
 
-const theme = createTheme({});
+const theme = createTheme({})
 
 export default function RootLayout({
   chart,
-  controls,
+  controls
 }: Readonly<{
-  children: ReactNode;
-  chart: ReactNode;
-  controls: ReactNode;
+  children: ReactNode
+  chart: ReactNode
+  controls: ReactNode
 }>) {
   return (
-    <html lang="en" className={comfortaa.className}>
+    <html lang='en' className={comfortaa.className}>
       <head>
         <ColorSchemeScript />
       </head>
       <body>
         <MantineProvider theme={theme}>
-          <div className="flex h-screen">
-            <div className="w-1/5">{controls}</div>
-            <div className="grow ">{chart}</div>
+          <Notifications />
+          <div className='flex h-screen'>
+            <div className='w-1/5'>{controls}</div>
+            <div className='grow '>{chart}</div>
           </div>
         </MantineProvider>
       </body>
     </html>
-  );
+  )
 }

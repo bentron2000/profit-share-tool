@@ -126,11 +126,11 @@ function getMileStone(
   const { milestones } = settings
   const previousMilestoneId = previous?.milestoneId || 0
   const nextMilestoneId = previousMilestoneId + 1
-  const nextMilestone = milestones.get(nextMilestoneId)
+  const nextMilestone = milestones[nextMilestoneId]
 
   if (!nextMilestone) {
     // There is no next milestone. The previous one applies.
-    return milestones.get(previousMilestoneId)
+    return milestones[previousMilestoneId]
   }
 
   if (nextMilestone.basis === 'sales') {
@@ -185,5 +185,5 @@ function getMileStone(
   }
 
   // The next milestone has not been reached. The previous one applies.
-  return milestones.get(previousMilestoneId)
+  return milestones[previousMilestoneId]
 }

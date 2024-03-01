@@ -7,16 +7,10 @@ export interface SettingsListItem {
   description: string // a description of the settings
 }
 
-const serializeSettings = (settings: ChartSettings) => {
-  const milestones = Array.from(settings.milestones.entries())
-  return JSON.stringify({ ...settings, milestones })
-}
+const serializeSettings = (settings: Partial<ChartSettings>) =>
+  JSON.stringify(settings)
 
-const deserializeSettings = (serialized: string) => {
-  const parsed = JSON.parse(serialized)
-  const milestones = new Map(parsed.milestones)
-  return { ...parsed, milestones }
-}
+const deserializeSettings = (serialized: string) => JSON.parse(serialized)
 
 export function getList() {
   if (typeof localStorage === 'undefined') return [DEFAULT_SETTINGS.listEntry]
@@ -39,7 +33,7 @@ function init() {
 
 export function createSettings(
   item: SettingsListItem,
-  settings: ChartSettings
+  settings: Partial<ChartSettings>
 ) {
   const currentList = getList()
   const newList = [...currentList, item]
@@ -62,6 +56,6 @@ export function loadSettings(id: string) {
   return null
 }
 
-export function saveSettings(id: string, settings: ChartSettings) {
+export function saveSettings(id: string, settings: Partial<ChartSettings>) {
   localStorage.setItem(id, serializeSettings(settings))
 }

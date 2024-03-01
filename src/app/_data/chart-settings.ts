@@ -2,10 +2,13 @@
 import type { RequireExactlyOne } from 'type-fest'
 import { create } from 'zustand'
 import {
+  DEFAULT_DISPLAY_DATA,
+  DEFAULT_ITEM_KEY,
   DEFAULT_NUM_ITEMS,
   DEFAULT_SALE_PRICE,
   DEFAULT_SETTINGS
 } from './constants'
+import { SettingsListItem } from './persistence'
 
 export interface ChartSettings {
   numItemsToSell: number
@@ -16,8 +19,12 @@ export interface ChartSettings {
   setEditionCosts: (amount: number) => void
   allCostsRecoupedBy: number
   setallCostsRecoupedBy: (milestone: number) => void
-  milestones: Map<number, Milestone>
+  milestones: Record<number, Milestone>
   saveMilestone: (milestone: Milestone) => void
+  dataToDisplay: string[]
+  setDataToDisplay: (data: string[]) => void
+  loadSettings: (settings: Partial<ChartSettings>) => void
+  currentSetting?: SettingsListItem
 }
 type BasisValue = {
   basisPercentage: number
@@ -60,7 +67,12 @@ export const chartSettings = create<ChartSettings>()((set, get) => ({
   milestones: DEFAULT_SETTINGS.settings.milestones,
   saveMilestone: milestone => {
     const oldMilstones = get().milestones
-    oldMilstones.set(milestone.milestoneNumber, milestone)
-    set({ milestones: new Map(oldMilstones) })
-  }
+    return {
+      milestones: { ...oldMilstones, [milestone.milestoneNumber]: milestone }
+    }
+  },
+  dataToDisplay: DEFAULT_DISPLAY_DATA,
+  setDataToDisplay: data => set({ dataToDisplay: data }),
+  loadSettings: settings => set(settings),
+  currentSetting: DEFAULT_SETTINGS.listEntry
 }))

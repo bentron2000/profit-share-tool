@@ -15,7 +15,7 @@ export const milestonesToReferenceLines =
         strokeDasharray: '3 3'
       }
     ]
-    const milestoneLines = Array.from(settings.milestones.values())
+    const milestoneLines = Object.values(settings.milestones)
       .map(milestone => {
         if (milestone.basis === 'sales') {
           if (milestone.basisPercentage) {
