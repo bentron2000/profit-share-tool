@@ -1,21 +1,22 @@
 'use client'
 import React, { useCallback, useEffect } from 'react'
 import { PropsWithChildren, useState } from 'react'
-import { Modal, Select, TextInput, Textarea } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
+
+import { Modal, Popover, Select, TextInput, Textarea } from '@mantine/core'
+import { useDebounceCallback, useDisclosure } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
 
 import { getList, updateSettings } from '../app/_data/persistence'
 import {
   DocumentDuplicateIcon,
   FolderArrowDownIcon,
+  PencilIcon,
   PlusIcon,
   TrashIcon
 } from '@heroicons/react/24/outline'
 
 import { chartSettings } from '@/app/_data/chart-settings'
 import { loadSaveSettings } from '@/app/_data/load-save-settings'
-import { create } from 'zustand'
 
 export function LoadSave() {
   const { loadSettings, id } = chartSettings()
@@ -24,15 +25,20 @@ export function LoadSave() {
   return (
     <div className='flex flex-col gap-2 rounded-lg p-4 ring-1'>
       <h2 className='text-lg font-semibold'>Scenario Controls</h2>
-      <Select
-        label='Current Scenario'
-        data={list}
-        value={id}
-        onChange={(_, option) => {
-          console.log({ item: option })
-          loadSettings(option.value)
-        }}
-      />
+      <div className='flex items-end'>
+        <Select
+          className='grow'
+          label='Current Scenario'
+          data={list}
+          value={id}
+          onChange={(_, option) => {
+            console.log({ item: option })
+            loadSettings(option.value)
+          }}
+        />
+        <Edit />
+      </div>
+
       <div className='flex gap-2'>
         <New />
         <Save />
@@ -138,6 +144,49 @@ function New() {
         />
       </div>
     </ChartModal>
+  )
+}
+function Edit() {
+  const { saveSettings, name, description } = chartSettings()
+
+  const nameRef = React.createRef<HTMLInputElement>()
+  const descRef = React.createRef<HTMLTextAreaElement>()
+
+  const handleEdit = useCallback(() => {
+    saveSettings({
+      name: nameRef.current?.value || name,
+      description: descRef.current?.value
+    })
+  }, [nameRef, descRef, saveSettings, name])
+
+  return (
+    <Popover
+      width={300}
+      trapFocus
+      position='bottom'
+      withArrow
+      shadow='md'
+      onClose={handleEdit}
+    >
+      <Popover.Target>
+        <PencilIcon className='m-2 w-5' />
+      </Popover.Target>
+      <Popover.Dropdown>
+        <TextInput
+          ref={nameRef}
+          defaultValue={name}
+          label='Name'
+          placeholder='Enter a name for this scenario'
+        />
+        <Textarea
+          ref={descRef}
+          label='Description'
+          resize='vertical'
+          placeholder='Enter a description for this scenario'
+          defaultValue={description}
+        />
+      </Popover.Dropdown>
+    </Popover>
   )
 }
 
