@@ -8,9 +8,10 @@ interface ChartModalProps {
   icon: React.ReactNode
   // footer: a render prop function that gives the close function as a parameter returns a React.ReactNode
   footer: (close: () => void) => React.ReactNode
-  buttonText: string
-  modalTitle: string
+  buttonText?: string
+  modalTitle?: string
   disabled?: boolean
+  buttonClassNames?: string
 }
 
 export function ChartModal({
@@ -19,16 +20,13 @@ export function ChartModal({
   modalTitle,
   footer,
   children,
+  buttonClassNames = 'flex grow items-center gap-1 rounded-md p-1 text-xs font-light ring-1 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600',
   disabled
 }: PropsWithChildren<ChartModalProps>) {
   const [opened, { open, close }] = useDisclosure(false)
   return (
     <>
-      <button
-        disabled={disabled}
-        onClick={open}
-        className='flex grow items-center gap-1 rounded-md p-1 text-xs font-light ring-1 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600'
-      >
+      <button disabled={disabled} onClick={open} className={buttonClassNames}>
         {icon}
         {buttonText}
       </button>

@@ -1,5 +1,5 @@
 'use client'
-import { PencilSquareIcon } from '@heroicons/react/24/outline'
+import { PencilSquareIcon, PlusIcon } from '@heroicons/react/24/outline'
 import { Select, Switch, TextInput } from '@mantine/core'
 import { useState } from 'react'
 import {
@@ -10,12 +10,16 @@ import {
   chartSettings
 } from '../../app/_data/chart-settings'
 import { ValueSlider } from '@/Components/ValueSlider'
+import { AddMilestone } from './AddMilestone'
 
 export function Milestones() {
   const { milestones } = chartSettings()
   return (
-    <div className='flex flex-col gap-3'>
-      Milestone Settings
+    <div className='flex w-full flex-col gap-3'>
+      <div className='flex justify-between'>
+        <h2 className='text-lg font-semibold'>Milestone Settings</h2>
+        <AddMilestone />
+      </div>
       {Object.values(milestones).map(milestone => (
         <MilestoneItemSettings
           key={milestone.milestoneNumber}
