@@ -2,8 +2,8 @@
 import React from 'react'
 import { notifications } from '@mantine/notifications'
 import { DocumentDuplicateIcon } from '@heroicons/react/24/outline'
-import { chartSettings } from '@/app/_data/chart-settings'
-import { DEFAULT_SETTINGS } from '@/app/_data/constants'
+import { chartSettings } from '@/lib/chart-settings'
+import { DEFAULT_SETTINGS } from '@/lib/constants'
 import { ChartModal } from '../Shared/ChartModalProps'
 
 export function DeleteScenario() {

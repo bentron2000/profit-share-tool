@@ -8,7 +8,7 @@ import {
   Milestone,
   basisOptions,
   chartSettings
-} from '../../app/_data/chart-settings'
+} from '../../lib/chart-settings'
 import { ValueSlider } from '@/Components/ValueSlider'
 import { AddMilestone } from './AddMilestone'
 

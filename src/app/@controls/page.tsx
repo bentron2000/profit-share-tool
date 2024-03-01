@@ -1,5 +1,5 @@
 'use client'
-import { chartSettings } from '../_data/chart-settings'
+import { chartSettings } from '../../lib/chart-settings'
 import { LoadSave } from '../../Components/LoadSave/LoadSave'
 import { Milestones } from '../../Components/MilestoneSettings/Milestones'
 import { ValueSlider } from '../../Components/ValueSlider'

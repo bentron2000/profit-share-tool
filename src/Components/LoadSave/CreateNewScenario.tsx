@@ -3,7 +3,7 @@ import React from 'react'
 import { useState } from 'react'
 import { TextInput, Textarea } from '@mantine/core'
 import { PlusIcon } from '@heroicons/react/24/outline'
-import { chartSettings } from '@/app/_data/chart-settings'
+import { chartSettings } from '@/lib/chart-settings'
 import { ChartModal } from '../Shared/ChartModalProps'
 
 export function CreateNewScenario() {

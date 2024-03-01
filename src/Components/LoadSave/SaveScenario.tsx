@@ -1,9 +1,9 @@
 'use client'
 import React, { useCallback } from 'react'
 import { notifications } from '@mantine/notifications'
-import { updateSettings } from '../../app/_data/persistence'
+import { updateSettings } from '../../lib/persistence'
 import { FolderArrowDownIcon } from '@heroicons/react/24/outline'
-import { chartSettings } from '@/app/_data/chart-settings'
+import { chartSettings } from '@/lib/chart-settings'
 
 export function SaveScenario() {
   const settings = chartSettings()

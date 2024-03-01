@@ -1,4 +1,4 @@
-import { chartSettings } from '@/app/_data/chart-settings'
+import { chartSettings } from '@/lib/chart-settings'
 
 export function ResultInfo() {
   const { numItemsToSell, salePrice, editionCosts } = chartSettings()

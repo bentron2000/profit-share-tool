@@ -1,8 +1,8 @@
 'use client'
 import React from 'react'
 import { Select } from '@mantine/core'
-import { chartSettings } from '@/app/_data/chart-settings'
-import { loadSaveSettings } from '@/app/_data/load-save-settings'
+import { chartSettings } from '@/lib/chart-settings'
+import { loadSaveSettings } from '@/lib/load-save-settings'
 
 export function SelectSavedScenario() {
   const { loadSettings, id } = chartSettings()

@@ -2,7 +2,7 @@
 import React, { useCallback } from 'react'
 import { Popover, TextInput, Textarea } from '@mantine/core'
 import { PencilIcon } from '@heroicons/react/24/outline'
-import { chartSettings } from '@/app/_data/chart-settings'
+import { chartSettings } from '@/lib/chart-settings'
 
 export function EditNameDescription() {
   const { saveSettings, name, description } = chartSettings()

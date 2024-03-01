@@ -1,7 +1,7 @@
 import { Checkbox, Menu } from '@mantine/core'
 import { WrenchScrewdriverIcon } from '@heroicons/react/24/outline'
-import { chartSettings } from '@/app/_data/chart-settings'
-import { series } from '@/app/_data/constants'
+import { chartSettings } from '@/lib/chart-settings'
+import { series } from '@/lib/constants'
 import { without } from 'ramda'
 
 export function DisplaySettings() {
