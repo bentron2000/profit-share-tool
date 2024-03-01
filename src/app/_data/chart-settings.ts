@@ -8,7 +8,12 @@ import {
   DEFAULT_SALE_PRICE,
   DEFAULT_SETTINGS
 } from './constants'
-import { createNewSettings, readSettings, updateSettings } from './persistence'
+import {
+  createNewSettings,
+  deleteSettings,
+  readSettings,
+  updateSettings
+} from './persistence'
 import { dumbRandomIdGenerator } from '@/lib/utils'
 import { loadSaveSettings } from './load-save-settings'
 
@@ -26,8 +31,10 @@ export interface ChartSettings {
   dataToDisplay: string[]
   setDataToDisplay: (data: string[]) => void
   createNewSettings: (name: string, description: string) => void
+  duplicateCurrentSettings: (name: string, description: string) => void
   loadSettings: (id: string) => void
   saveSettings: (settings: Partial<ChartSettings>) => void
+  deleteSettings: (id: string) => void
   name: string
   id: string
   description: string
@@ -95,6 +102,19 @@ export const chartSettings = create<ChartSettings>()(
       set(newSettings)
       loadSaveSettings.getState().reloadList()
     },
+    duplicateCurrentSettings: (name, description) => {
+      const currentSettings = get()
+      const newSettings = {
+        ...currentSettings,
+        id: dumbRandomIdGenerator(),
+        name,
+        description
+      }
+
+      createNewSettings(newSettings)
+      set(newSettings)
+      loadSaveSettings.getState().reloadList()
+    },
     loadSettings: id => {
       const settings = readSettings(id)
       if (settings) {
@@ -107,6 +127,14 @@ export const chartSettings = create<ChartSettings>()(
       updateSettings(newSettings)
       loadSaveSettings.getState().reloadList()
       set(newSettings)
+    },
+    deleteSettings: id => {
+      deleteSettings(id)
+      loadSaveSettings.getState().reloadList()
+      const toLoad = loadSaveSettings.getState().list[0]
+      if (toLoad) {
+        get().loadSettings(toLoad.value)
+      }
     }
   }))
 )

@@ -1,12 +1,12 @@
 'use client'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import { PropsWithChildren, useState } from 'react'
 
 import { Modal, Popover, Select, TextInput, Textarea } from '@mantine/core'
-import { useDebounceCallback, useDisclosure } from '@mantine/hooks'
+import { useDisclosure } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
 
-import { getList, updateSettings } from '../app/_data/persistence'
+import { updateSettings } from '../app/_data/persistence'
 import {
   DocumentDuplicateIcon,
   FolderArrowDownIcon,
@@ -17,39 +17,22 @@ import {
 
 import { chartSettings } from '@/app/_data/chart-settings'
 import { loadSaveSettings } from '@/app/_data/load-save-settings'
+import { DEFAULT_SETTINGS } from '@/app/_data/constants'
 
 export function LoadSave() {
-  const { loadSettings, id } = chartSettings()
-  const { list } = loadSaveSettings()
-
   return (
     <div className='flex flex-col gap-2 rounded-lg p-4 ring-1'>
       <h2 className='text-lg font-semibold'>Scenario Controls</h2>
       <div className='flex items-end'>
-        <Select
-          className='grow'
-          label='Current Scenario'
-          data={list}
-          value={id}
-          onChange={(_, option) => {
-            console.log({ item: option })
-            loadSettings(option.value)
-          }}
-        />
-        <Edit />
+        <SelectSavedScenario />
+        <EditNameDescription />
       </div>
 
       <div className='flex gap-2'>
-        <New />
+        <CreateNewScenario />
         <Save />
-        <span className='flex grow items-center gap-1 rounded-md p-1 text-xs font-light ring-1'>
-          <DocumentDuplicateIcon className='w-5' />
-          Copy
-        </span>
-        <span className='flex grow items-center gap-1 rounded-md p-1 text-xs font-light ring-1'>
-          <TrashIcon className='w-5' />
-          Delete
-        </span>
+        <DuplicateScenario />
+        <Delete />
       </div>
     </div>
   )
@@ -61,6 +44,7 @@ interface ChartModalProps {
   footer: (close: () => void) => React.ReactNode
   buttonText: string
   modalTitle: string
+  disabled?: boolean
 }
 
 function ChartModal({
@@ -68,14 +52,16 @@ function ChartModal({
   buttonText,
   modalTitle,
   footer,
-  children
+  children,
+  disabled
 }: PropsWithChildren<ChartModalProps>) {
   const [opened, { open, close }] = useDisclosure(false)
   return (
     <>
       <button
+        disabled={disabled}
         onClick={open}
-        className='flex grow items-center gap-1 rounded-md p-1 text-xs font-light ring-1'
+        className='flex grow items-center gap-1 rounded-md p-1 text-xs font-light ring-1 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600'
       >
         {icon}
         {buttonText}
@@ -91,16 +77,31 @@ function ChartModal({
   )
 }
 
-function New() {
-  const settings = chartSettings()
+function SelectSavedScenario() {
+  const { loadSettings, id } = chartSettings()
+  const { list } = loadSaveSettings()
+  return (
+    <Select
+      className='grow'
+      label='Current Scenario'
+      data={list}
+      value={id}
+      onChange={(_, option) => {
+        if (option?.value && id !== option.value) {
+          loadSettings(option.value)
+        }
+      }}
+    />
+  )
+}
 
+function CreateNewScenario() {
+  const settings = chartSettings()
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-
   const handleCreate = () => {
     settings.createNewSettings(name, description)
   }
-
   return (
     <ChartModal
       icon={<PlusIcon className='w-5' />}
@@ -146,7 +147,8 @@ function New() {
     </ChartModal>
   )
 }
-function Edit() {
+
+function EditNameDescription() {
   const { saveSettings, name, description } = chartSettings()
 
   const nameRef = React.createRef<HTMLInputElement>()
@@ -211,5 +213,109 @@ function Save() {
       <FolderArrowDownIcon className='w-5' />
       Save
     </button>
+  )
+}
+
+function DuplicateScenario() {
+  const settings = chartSettings()
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+  const handleDuplicate = () => {
+    settings.duplicateCurrentSettings(name, description)
+  }
+  return (
+    <ChartModal
+      icon={<DocumentDuplicateIcon className='w-5' />}
+      buttonText='Copy'
+      modalTitle='Copy / Duplicate Scenario'
+      footer={close => (
+        <div className='mt-3 flex gap-3'>
+          <button
+            disabled={!name || !description}
+            onClick={() => {
+              handleDuplicate()
+              close()
+            }}
+            className='rounded-sm bg-green-300 px-2 py-1 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600'
+          >
+            Duplicate
+          </button>
+          <button onClick={close} className='rounded-sm bg-red-300 px-2 py-1'>
+            Cancel
+          </button>
+        </div>
+      )}
+    >
+      <div className='flex flex-col gap-3'>
+        <p className='mt-2 text-sm'>
+          Enter the name and a description for the duplicated scenario
+        </p>
+
+        <TextInput
+          label='Name'
+          placeholder='Enter a name'
+          value={name}
+          onChange={e => setName(e.currentTarget.value)}
+        />
+        <Textarea
+          label='Description'
+          resize='vertical'
+          placeholder='Enter a description'
+          value={description}
+          onChange={e => setDescription(e.currentTarget.value)}
+        />
+      </div>
+    </ChartModal>
+  )
+}
+
+function Delete() {
+  const { id, deleteSettings } = chartSettings()
+
+  const handleDelete = () => {
+    // do not delete the default settings as we always need one
+    if (id === DEFAULT_SETTINGS.id) {
+      notifications.show({
+        color: 'red',
+        title: 'Error!',
+        message: 'You cannot delete the default settings.'
+      })
+      return
+    }
+    deleteSettings(id)
+    notifications.show({
+      color: 'green',
+      title: 'Deleted!',
+      message: 'Your settings have been deleted.'
+    })
+  }
+
+  return (
+    <ChartModal
+      disabled={id === DEFAULT_SETTINGS.id}
+      icon={<DocumentDuplicateIcon className='w-5' />}
+      buttonText='Delete'
+      modalTitle='Delete Scenario'
+      footer={close => (
+        <div className='mt-3 flex gap-3'>
+          <button
+            onClick={() => {
+              handleDelete()
+              close()
+            }}
+            className='rounded-sm bg-red-300 px-2 py-1 font-bold'
+          >
+            Delete
+          </button>
+          <button onClick={close} className='rounded-sm bg-green-300 px-2 py-1'>
+            Cancel
+          </button>
+        </div>
+      )}
+    >
+      <div className='flex flex-col gap-3'>
+        <p className='mt-2 text-sm'>Are you sure? This cannot be undone.</p>
+      </div>
+    </ChartModal>
   )
 }
