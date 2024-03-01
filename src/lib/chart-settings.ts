@@ -84,9 +84,11 @@ export const chartSettings = create<ChartSettings>()(
     milestones: DEFAULT_SETTINGS.milestones,
     saveMilestone: milestone => {
       const oldMilstones = get().milestones
-      set({
+      const updatedMilestones = {
         milestones: { ...oldMilstones, [milestone.milestoneNumber]: milestone }
-      })
+      }
+      set(updatedMilestones)
+      get().saveSettings(updatedMilestones)
     },
     dataToDisplay: DEFAULT_DISPLAY_DATA,
     setDataToDisplay: data => set({ dataToDisplay: data }),
@@ -125,8 +127,8 @@ export const chartSettings = create<ChartSettings>()(
       const oldSettings = get()
       const newSettings = { ...oldSettings, ...settings }
       updateSettings(newSettings)
-      loadSaveSettings.getState().reloadList()
       set(newSettings)
+      loadSaveSettings.getState().reloadList()
     },
     deleteSettings: id => {
       deleteSettings(id)

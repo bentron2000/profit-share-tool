@@ -22,6 +22,7 @@ export function getList(): SettingsListItem[] {
 }
 
 function init() {
+  console.log('initializing!')
   localStorage.setItem(
     'saved-settings',
     JSON.stringify({ [DEFAULT_SETTINGS.id]: DEFAULT_SETTINGS })

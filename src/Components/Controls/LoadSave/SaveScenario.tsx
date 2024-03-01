@@ -15,7 +15,6 @@ export function SaveScenario() {
       title: 'Saved!',
       message: 'Your settings have been saved.'
     })
-    console.log('saved', settings)
   }, [settings])
 
   return (

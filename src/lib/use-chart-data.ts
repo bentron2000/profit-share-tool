@@ -16,7 +16,7 @@ export const calculateSeries = (settings: ChartSettings) => {
     { length: settings.numItemsToSell },
     (_, i) => i + 1
   )
-
+  console.log('recalculate', settings)
   const data = newArray.reduce<SeriesData[]>((acc, saleNumber) => {
     const previous = last(acc)
     const milestone = getMileStone(saleNumber, previous, settings)

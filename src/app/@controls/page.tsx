@@ -1,6 +1,12 @@
 'use client'
 import { LoadSave } from '../../Components/Controls/LoadSave/LoadSave'
 import { BaseSettings } from '../../Components/Controls/BaseSettings/BaseSettings'
+// import { useMantineColorScheme } from '@mantine/core'
+// import {
+//   ComputerDesktopIcon,
+//   MoonIcon,
+//   SunIcon
+// } from '@heroicons/react/24/outline'
 
 export default function ControlsPage() {
   return (
@@ -13,3 +19,29 @@ export default function ControlsPage() {
     </div>
   )
 }
+
+// const modes = ['light', 'dark', 'auto'] as const
+
+// function ColourModeToggle() {
+//   const { colorScheme, setColorScheme } = useMantineColorScheme()
+//   switch (colorScheme) {
+//     case 'auto':
+//       return (
+//         <button onClick={() => setColorScheme('light')}>
+//           <ComputerDesktopIcon className='w-5' />
+//         </button>
+//       )
+//     case 'light':
+//       return (
+//         <button onClick={() => setColorScheme('dark')}>
+//           <MoonIcon className='w-5' />
+//         </button>
+//       )
+//     case 'dark':
+//       return (
+//         <button onClick={() => setColorScheme('auto')}>
+//           <SunIcon className='w-5' />
+//         </button>
+//       )
+//   }
+// }

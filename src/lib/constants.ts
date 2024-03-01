@@ -23,7 +23,7 @@ export type SeriesNames = (typeof series)[number]['name']
 
 export const dataKey = 'saleNumber'
 
-const DEFAULT_MILESTONE = {
+export const DEFAULT_MILESTONE = {
   0: {
     milestoneNumber: 0,
     label: 'Starting Milestone',
