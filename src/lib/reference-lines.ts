@@ -9,7 +9,7 @@ export const milestonesToReferenceLines =
   (settings: ChartSettings): ChartReferenceLineProps[] => {
     const staticLines = [
       {
-        y: settings.editionCosts,
+        y: settings.totalProjectCosts,
         label: 'break even',
         color: 'red.6',
         strokeDasharray: '3 3'
@@ -63,7 +63,7 @@ export const milestonesToReferenceLines =
           if (milestone.basisPercentage) {
             // find the sale number that corresponds to this percentage of total costs
             const costsThreshold =
-              milestone.basisPercentage * settings.editionCosts
+              milestone.basisPercentage * settings.totalProjectCosts
             const saleNumber =
               data.find(
                 d => d?.costsRecovered && d?.costsRecovered >= costsThreshold

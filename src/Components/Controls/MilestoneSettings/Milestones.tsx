@@ -196,7 +196,7 @@ function getMinMax(
 ): [number, number] {
   switch (milestone.basis) {
     case 'costs':
-      return [0, settings.editionCosts]
+      return [0, settings.totalProjectCosts]
     case 'revenue':
       return [0, settings.salePrice * settings.numItemsToSell]
     case 'sales':

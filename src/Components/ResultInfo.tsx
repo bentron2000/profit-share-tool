@@ -1,7 +1,11 @@
 import { chartSettings } from '@/lib/chart-settings'
 
 export function ResultInfo() {
-  const { numItemsToSell, salePrice, editionCosts } = chartSettings()
+  const {
+    numItemsToSell,
+    salePrice,
+    totalProjectCosts: editionCosts
+  } = chartSettings()
   return (
     <>
       <p>

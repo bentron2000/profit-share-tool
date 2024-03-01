@@ -69,7 +69,7 @@ export const calculateSeries = (settings: ChartSettings) => {
 
     const costsRemaining = previous?.costsRemaining
       ? previous.costsRemaining - costComponent
-      : settings.editionCosts
+      : settings.totalProjectCosts
 
     const thedata = {
       saleNumber,
@@ -99,14 +99,14 @@ function calculateCostComponent(
   milestone?: Milestone
 ): number {
   // if we've already recouped all costs, we don't need to calculate anything
-  if ((previous?.costsRecovered || 0) >= settings.editionCosts) {
+  if ((previous?.costsRecovered || 0) >= settings.totalProjectCosts) {
     return 0
   }
 
   if (milestone?.basis === 'costs' && milestone.evenDistribution) {
     // we divide the costs up evenly across the remaining sales up to allCostsRecoupedBy
     const remainingCosts =
-      settings.editionCosts - (previous?.costsRecovered || 0)
+      settings.totalProjectCosts - (previous?.costsRecovered || 0)
     const remainingSales = settings.allCostsRecoupedBy - saleNumber + 1
     return remainingCosts / remainingSales
   }
@@ -161,7 +161,8 @@ function getMileStone(
     }
     if (
       typeof nextMilestone.basisPercentage === 'number' &&
-      costsRecouped / settings.editionCosts >= nextMilestone.basisPercentage
+      costsRecouped / settings.totalProjectCosts >=
+        nextMilestone.basisPercentage
     ) {
       return nextMilestone
     }

@@ -22,8 +22,8 @@ export interface ChartSettings {
   setnumItemsToSell: (size: number) => void
   salePrice: number
   setSalePrice: (price: number) => void
-  editionCosts: number
-  setEditionCosts: (amount: number) => void
+  totalProjectCosts: number
+  setProjectCosts: (amount: number) => void
   allCostsRecoupedBy: number
   setallCostsRecoupedBy: (milestone: number) => void
   milestones: Record<number, Milestone>
@@ -77,8 +77,8 @@ export const chartSettings = create<ChartSettings>()(
     setnumItemsToSell: size => set({ numItemsToSell: size }),
     salePrice: DEFAULT_SALE_PRICE,
     setSalePrice: price => set({ salePrice: price }),
-    editionCosts: DEFAULT_NUM_ITEMS * DEFAULT_SALE_PRICE * 0.2,
-    setEditionCosts: amount => set({ editionCosts: amount }),
+    totalProjectCosts: DEFAULT_NUM_ITEMS * DEFAULT_SALE_PRICE * 0.2,
+    setProjectCosts: amount => set({ totalProjectCosts: amount }),
     allCostsRecoupedBy: DEFAULT_NUM_ITEMS,
     setallCostsRecoupedBy: milestone => set({ allCostsRecoupedBy: milestone }),
     milestones: DEFAULT_SETTINGS.milestones,

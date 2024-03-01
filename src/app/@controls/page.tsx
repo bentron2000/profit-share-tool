@@ -1,6 +1,6 @@
 'use client'
 import { LoadSave } from '../../Components/Controls/LoadSave/LoadSave'
-import { BaseSettings } from '../../Components/Controls/BaseSettings'
+import { BaseSettings } from '../../Components/Controls/BaseSettings/BaseSettings'
 
 export default function ControlsPage() {
   return (

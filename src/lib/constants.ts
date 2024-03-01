@@ -49,7 +49,7 @@ export const DEFAULT_SETTINGS = {
   description: 'Default settings for the chart.',
   numItemsToSell: DEFAULT_NUM_ITEMS,
   salePrice: DEFAULT_SALE_PRICE,
-  editionCosts: DEFAULT_NUM_ITEMS * DEFAULT_SALE_PRICE * 0.2,
+  totalProjectCosts: DEFAULT_NUM_ITEMS * DEFAULT_SALE_PRICE * 0.2,
   allCostsRecoupedBy: DEFAULT_NUM_ITEMS,
   milestones: DEFAULT_MILESTONE,
   dataToDisplay: DEFAULT_DISPLAY_DATA
