@@ -1,5 +1,4 @@
 import { LineChartSeries } from '@mantine/charts'
-import { SettingsListItem } from './persistence'
 import { ChartSettings, Milestone } from './chart-settings'
 import { prop } from 'ramda'
 
@@ -45,17 +44,13 @@ export const DEFAULT_ITEM_KEY = 'default-item'
 export const DEFAULT_DISPLAY_DATA = series.map(prop('name'))
 
 export const DEFAULT_SETTINGS = {
-  listEntry: {
-    value: DEFAULT_ITEM_KEY,
-    label: 'Basic Settings',
-    description: 'Default settings for the chart.'
-  } satisfies SettingsListItem,
-  settings: {
-    numItemsToSell: DEFAULT_NUM_ITEMS,
-    salePrice: DEFAULT_SALE_PRICE,
-    editionCosts: DEFAULT_NUM_ITEMS * DEFAULT_SALE_PRICE * 0.2,
-    allCostsRecoupedBy: DEFAULT_NUM_ITEMS,
-    milestones: DEFAULT_MILESTONE,
-    dataToDisplay: DEFAULT_DISPLAY_DATA
-  } satisfies Partial<ChartSettings>
-} as const
+  id: DEFAULT_ITEM_KEY,
+  name: 'Basic Settings',
+  description: 'Default settings for the chart.',
+  numItemsToSell: DEFAULT_NUM_ITEMS,
+  salePrice: DEFAULT_SALE_PRICE,
+  editionCosts: DEFAULT_NUM_ITEMS * DEFAULT_SALE_PRICE * 0.2,
+  allCostsRecoupedBy: DEFAULT_NUM_ITEMS,
+  milestones: DEFAULT_MILESTONE,
+  dataToDisplay: DEFAULT_DISPLAY_DATA
+} satisfies Partial<ChartSettings>

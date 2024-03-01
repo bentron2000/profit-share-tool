@@ -40,7 +40,7 @@ export default function RootLayout({
         <MantineProvider theme={theme}>
           <Notifications />
           <div className='flex h-screen'>
-            <div className='w-1/5'>{controls}</div>
+            <div className='min-w-72'>{controls}</div>
             <div className='grow '>{chart}</div>
           </div>
         </MantineProvider>

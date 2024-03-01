@@ -3,12 +3,13 @@ import type { RequireExactlyOne } from 'type-fest'
 import { create } from 'zustand'
 import {
   DEFAULT_DISPLAY_DATA,
-  DEFAULT_ITEM_KEY,
   DEFAULT_NUM_ITEMS,
   DEFAULT_SALE_PRICE,
   DEFAULT_SETTINGS
 } from './constants'
-import { SettingsListItem } from './persistence'
+import { createNewSettings, readSettings } from './persistence'
+import { dumbRandomIdGenerator } from '@/lib/utils'
+import { loadSaveSettings } from './load-save-settings'
 
 export interface ChartSettings {
   numItemsToSell: number
@@ -23,8 +24,11 @@ export interface ChartSettings {
   saveMilestone: (milestone: Milestone) => void
   dataToDisplay: string[]
   setDataToDisplay: (data: string[]) => void
-  loadSettings: (settings: Partial<ChartSettings>) => void
-  currentSetting?: SettingsListItem
+  createNewSettings: (name: string, description: string) => void
+  loadSettings: (id: string) => void
+  name: string
+  id: string
+  description: string
 }
 type BasisValue = {
   basisPercentage: number
@@ -56,6 +60,9 @@ export type BasisOptions = (typeof basisOptions)[number]
 export type Milestone = MilestoneData & (SalesBasis | RevenueBasis | CostBasis)
 
 export const chartSettings = create<ChartSettings>()((set, get) => ({
+  id: DEFAULT_SETTINGS.id,
+  name: DEFAULT_SETTINGS.name,
+  description: DEFAULT_SETTINGS.description,
   numItemsToSell: DEFAULT_NUM_ITEMS,
   setnumItemsToSell: size => set({ numItemsToSell: size }),
   salePrice: DEFAULT_SALE_PRICE,
@@ -64,15 +71,31 @@ export const chartSettings = create<ChartSettings>()((set, get) => ({
   setEditionCosts: amount => set({ editionCosts: amount }),
   allCostsRecoupedBy: DEFAULT_NUM_ITEMS,
   setallCostsRecoupedBy: milestone => set({ allCostsRecoupedBy: milestone }),
-  milestones: DEFAULT_SETTINGS.settings.milestones,
+  milestones: DEFAULT_SETTINGS.milestones,
   saveMilestone: milestone => {
     const oldMilstones = get().milestones
-    return {
+    set({
       milestones: { ...oldMilstones, [milestone.milestoneNumber]: milestone }
-    }
+    })
   },
   dataToDisplay: DEFAULT_DISPLAY_DATA,
   setDataToDisplay: data => set({ dataToDisplay: data }),
-  loadSettings: settings => set(settings),
-  currentSetting: DEFAULT_SETTINGS.listEntry
+  createNewSettings: (name, description) => {
+    const newSettings = {
+      ...DEFAULT_SETTINGS,
+      id: dumbRandomIdGenerator(),
+      name,
+      description
+    }
+
+    createNewSettings(newSettings)
+    set(newSettings)
+    loadSaveSettings.getState().reloadList()
+  },
+  loadSettings: id => {
+    const settings = readSettings(id)
+    if (settings) {
+      set(settings)
+    }
+  }
 }))

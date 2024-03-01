@@ -1,16 +1,11 @@
 'use client'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { PropsWithChildren, useState } from 'react'
 import { Modal, Select, TextInput, Textarea } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
 
-import {
-  SettingsListItem,
-  createSettings,
-  getList,
-  saveSettings
-} from '../app/_data/persistence'
+import { getList, updateSettings } from '../app/_data/persistence'
 import {
   DocumentDuplicateIcon,
   FolderArrowDownIcon,
@@ -19,16 +14,12 @@ import {
 } from '@heroicons/react/24/outline'
 
 import { chartSettings } from '@/app/_data/chart-settings'
-import { dumbRandomIdGenerator } from '@/lib/utils'
-import { DEFAULT_SETTINGS } from '@/app/_data/constants'
-
-export const list = getList()
+import { loadSaveSettings } from '@/app/_data/load-save-settings'
+import { create } from 'zustand'
 
 export function LoadSave() {
-  // const [currentSettings, setCurrentSettings] = useState<
-  //   SettingsListItem | null | undefined
-  // >(list[0])
-  const settings = chartSettings()
+  const { loadSettings, id } = chartSettings()
+  const { list } = loadSaveSettings()
 
   return (
     <div className='flex flex-col gap-2 rounded-lg p-4 ring-1'>
@@ -36,9 +27,10 @@ export function LoadSave() {
       <Select
         label='Current Scenario'
         data={list}
-        value={settings.currentSetting?.value}
+        value={id}
         onChange={(_, option) => {
           console.log({ item: option })
+          loadSettings(option.value)
         }}
       />
       <div className='flex gap-2'>
@@ -95,23 +87,14 @@ function ChartModal({
 
 function New() {
   const settings = chartSettings()
-  const nameRef = React.useRef<HTMLInputElement>(null)
-  const descriptionRef = React.useRef<HTMLTextAreaElement>(null)
+
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
 
   const handleCreate = () => {
-    const listItem = {
-      value: dumbRandomIdGenerator(),
-      label: nameRef?.current?.value || 'New Scenario',
-      description: descriptionRef?.current?.value || 'No description'
-    } satisfies SettingsListItem
-    createSettings(listItem, DEFAULT_SETTINGS.settings)
-    // then we should load these new settings from localstore.
-
-    settings.loadSettings({
-      ...DEFAULT_SETTINGS.settings,
-      currentSetting: listItem
-    })
+    settings.createNewSettings(name, description)
   }
+
   return (
     <ChartModal
       icon={<PlusIcon className='w-5' />}
@@ -120,11 +103,12 @@ function New() {
       footer={close => (
         <div className='mt-3 flex gap-3'>
           <button
+            disabled={!name || !description}
             onClick={() => {
               handleCreate()
               close()
             }}
-            className='rounded-sm bg-green-300 px-2 py-1'
+            className='rounded-sm bg-green-300 px-2 py-1 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600'
           >
             Create
           </button>
@@ -140,15 +124,17 @@ function New() {
         </p>
 
         <TextInput
-          ref={nameRef}
           label='Name'
           placeholder='Enter a name for this scenario'
+          value={name}
+          onChange={e => setName(e.currentTarget.value)}
         />
         <Textarea
-          ref={descriptionRef}
           label='Description'
           resize='vertical'
           placeholder='Enter a description for this scenario'
+          value={description}
+          onChange={e => setDescription(e.currentTarget.value)}
         />
       </div>
     </ChartModal>
@@ -159,13 +145,13 @@ function Save() {
   const settings = chartSettings()
 
   const handleSave = useCallback(() => {
-    if (!settings.currentSetting?.value) return
-    saveSettings(settings.currentSetting.value, settings)
+    updateSettings(settings)
     notifications.show({
       color: 'green',
       title: 'Saved!',
       message: 'Your settings have been saved.'
     })
+    console.log('saved', settings)
   }, [settings])
 
   return (

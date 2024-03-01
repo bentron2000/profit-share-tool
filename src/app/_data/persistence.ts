@@ -1,61 +1,84 @@
 import { ChartSettings } from './chart-settings'
+import { SettingsListItem } from './load-save-settings'
 import { DEFAULT_SETTINGS } from './constants'
+import { SetRequired } from 'type-fest'
 
-export interface SettingsListItem {
-  value: string // a unique identifier for the settings
-  label: string // the name of the settings
-  description: string // a description of the settings
-}
+export function getList(): SettingsListItem[] {
+  if (typeof localStorage === 'undefined')
+    return [{ value: DEFAULT_SETTINGS.id, label: DEFAULT_SETTINGS.name }]
 
-const serializeSettings = (settings: Partial<ChartSettings>) =>
-  JSON.stringify(settings)
+  const data = localStorage.getItem('saved-settings')
 
-const deserializeSettings = (serialized: string) => JSON.parse(serialized)
-
-export function getList() {
-  if (typeof localStorage === 'undefined') return [DEFAULT_SETTINGS.listEntry]
-  const data = localStorage.getItem('list')
   if (data) {
-    return JSON.parse(data) as SettingsListItem[]
+    const allSettings = JSON.parse(data) as Record<string, ChartSettings>
+    return Object.values(allSettings).map(({ id, name }) => ({
+      value: id,
+      label: name
+    }))
   } else {
     init()
+    return [{ value: DEFAULT_SETTINGS.id, label: DEFAULT_SETTINGS.name }]
   }
-  return [DEFAULT_SETTINGS.listEntry]
 }
 
 function init() {
-  localStorage.setItem('list', JSON.stringify([DEFAULT_SETTINGS.listEntry]))
   localStorage.setItem(
-    DEFAULT_SETTINGS.listEntry.value,
-    serializeSettings(DEFAULT_SETTINGS.settings)
+    'saved-settings',
+    JSON.stringify({ [DEFAULT_SETTINGS.id]: DEFAULT_SETTINGS })
   )
 }
 
-export function createSettings(
-  item: SettingsListItem,
-  settings: Partial<ChartSettings>
+export function createNewSettings(
+  settings: SetRequired<Partial<ChartSettings>, 'id'>
 ) {
-  const currentList = getList()
-  const newList = [...currentList, item]
-  localStorage.setItem('list', JSON.stringify(newList))
-  localStorage.setItem(item.value, serializeSettings(settings))
+  const data = localStorage.getItem('saved-settings')
+
+  const allSettings: Record<string, ChartSettings> = data
+    ? JSON.parse(data)
+    : {}
+
+  const newData = {
+    ...allSettings,
+    [settings.id]: settings
+  }
+  localStorage.setItem('saved-settings', JSON.stringify(newData))
 }
 
 export function deleteSettings(id: string) {
-  const currentList = getList()
-  const newList = currentList.filter(item => item.value !== id)
-  localStorage.setItem('list', JSON.stringify(newList))
-  localStorage.removeItem(id)
-}
+  const data = localStorage.getItem('saved-settings')
 
-export function loadSettings(id: string) {
-  const data = localStorage.getItem(id)
   if (data) {
-    return deserializeSettings(data)
+    const allSettings = JSON.parse(data) as Record<string, ChartSettings>
+    delete allSettings[id]
+    localStorage.setItem('saved-settings', JSON.stringify(allSettings))
   }
-  return null
 }
 
-export function saveSettings(id: string, settings: Partial<ChartSettings>) {
-  localStorage.setItem(id, serializeSettings(settings))
+export function readSettings(id: string) {
+  const data = localStorage.getItem('saved-settings')
+
+  if (data) {
+    const allSettings = JSON.parse(data) as Record<string, ChartSettings>
+    return allSettings[id]
+  }
+}
+
+export function updateSettings(
+  settings: SetRequired<Partial<ChartSettings>, 'id'>
+): boolean {
+  const data = localStorage.getItem('saved-settings')
+
+  if (data) {
+    const allSettings = JSON.parse(data) as Record<string, ChartSettings>
+    const oldSettings = allSettings[settings.id]
+    const updatedSettings = { ...oldSettings, ...settings }
+    const newData = {
+      ...allSettings,
+      [settings.id]: updatedSettings
+    }
+    localStorage.setItem('saved-settings', JSON.stringify(newData))
+    return true
+  } else {
+    return false
+  }
 }
