@@ -8,8 +8,8 @@ import {
   Milestone,
   basisOptions,
   chartSettings
-} from '../../lib/chart-settings'
-import { ValueSlider } from '@/Components/ValueSlider'
+} from '../../../lib/chart-settings'
+import { ValueSlider } from '@/Components/Shared/ValueSlider'
 import { AddMilestone } from './AddMilestone'
 
 export function Milestones() {

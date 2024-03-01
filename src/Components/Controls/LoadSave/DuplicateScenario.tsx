@@ -2,33 +2,33 @@
 import React from 'react'
 import { useState } from 'react'
 import { TextInput, Textarea } from '@mantine/core'
-import { PlusIcon } from '@heroicons/react/24/outline'
+import { DocumentDuplicateIcon } from '@heroicons/react/24/outline'
 import { chartSettings } from '@/lib/chart-settings'
-import { ChartModal } from '../Shared/ChartModalProps'
+import { ChartModal } from '../../Shared/ChartModalProps'
 
-export function CreateNewScenario() {
+export function DuplicateScenario() {
   const settings = chartSettings()
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const handleCreate = () => {
-    settings.createNewSettings(name, description)
+  const handleDuplicate = () => {
+    settings.duplicateCurrentSettings(name, description)
   }
   return (
     <ChartModal
-      icon={<PlusIcon className='w-5' />}
-      buttonText='New'
-      modalTitle='New Scenario'
+      icon={<DocumentDuplicateIcon className='w-5' />}
+      buttonText='Copy'
+      modalTitle='Copy / Duplicate Scenario'
       footer={close => (
         <div className='mt-3 flex gap-3'>
           <button
             disabled={!name || !description}
             onClick={() => {
-              handleCreate()
+              handleDuplicate()
               close()
             }}
             className='rounded-sm bg-green-300 px-2 py-1 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600'
           >
-            Create
+            Duplicate
           </button>
           <button onClick={close} className='rounded-sm bg-red-300 px-2 py-1'>
             Cancel
@@ -38,19 +38,19 @@ export function CreateNewScenario() {
     >
       <div className='flex flex-col gap-3'>
         <p className='mt-2 text-sm'>
-          Enter the name and a description for this scenario
+          Enter the name and a description for the duplicated scenario
         </p>
 
         <TextInput
           label='Name'
-          placeholder='Enter a name for this scenario'
+          placeholder='Enter a name'
           value={name}
           onChange={e => setName(e.currentTarget.value)}
         />
         <Textarea
           label='Description'
           resize='vertical'
-          placeholder='Enter a description for this scenario'
+          placeholder='Enter a description'
           value={description}
           onChange={e => setDescription(e.currentTarget.value)}
         />

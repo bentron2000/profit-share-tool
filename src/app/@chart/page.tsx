@@ -6,7 +6,7 @@ import { unstable_noStore as noStore } from 'next/cache'
 import { chartSettings } from '../../lib/chart-settings'
 import { dataKey, series } from '../../lib/constants'
 import { milestonesToReferenceLines } from '../../lib/reference-lines'
-import { DisplaySettings } from '@/Components/DisplaySettings'
+import { ChartSettings } from '@/Components/ChartSettings'
 import { ResultInfo } from '@/Components/ResultInfo'
 
 export default function ChartPage() {
@@ -25,7 +25,7 @@ export default function ChartPage() {
     <div className='p-3'>
       <div className='flex gap-3'>
         Chart
-        <DisplaySettings />
+        <ChartSettings />
       </div>
       <div className='flex w-4/5 flex-col gap-8'>
         <LineChart

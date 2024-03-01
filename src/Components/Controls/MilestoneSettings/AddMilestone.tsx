@@ -1,5 +1,5 @@
 import { PlusIcon } from '@heroicons/react/24/outline'
-import { ChartModal } from '../Shared/ChartModalProps'
+import { ChartModal } from '../../Shared/ChartModalProps'
 import { TextInput } from '@mantine/core'
 
 export function AddMilestone() {

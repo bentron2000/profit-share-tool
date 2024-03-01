@@ -4,7 +4,7 @@ import { chartSettings } from '@/lib/chart-settings'
 import { series } from '@/lib/constants'
 import { without } from 'ramda'
 
-export function DisplaySettings() {
+export function ChartSettings() {
   const { dataToDisplay, setDataToDisplay } = chartSettings()
   return (
     <Menu closeOnClickOutside closeOnItemClick={false}>

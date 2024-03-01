@@ -4,7 +4,7 @@ import { notifications } from '@mantine/notifications'
 import { DocumentDuplicateIcon } from '@heroicons/react/24/outline'
 import { chartSettings } from '@/lib/chart-settings'
 import { DEFAULT_SETTINGS } from '@/lib/constants'
-import { ChartModal } from '../Shared/ChartModalProps'
+import { ChartModal } from '../../Shared/ChartModalProps'
 
 export function DeleteScenario() {
   const { id, deleteSettings } = chartSettings()
