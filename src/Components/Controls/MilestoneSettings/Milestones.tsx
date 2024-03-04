@@ -103,7 +103,7 @@ function MilestoneItemSettings({ milestone }: { milestone: Milestone }) {
             max={1}
             step={0.01}
             label={value => `${(value * 100).toFixed(0)}%`}
-            title='Artist Share'
+            title='Partner Share'
           />
           <ValueSlider
             value={milestone.companyShare}
@@ -111,7 +111,7 @@ function MilestoneItemSettings({ milestone }: { milestone: Milestone }) {
             min={0}
             max={1}
             color='gray.4'
-            title='Moncoeur Share'
+            title='Company Share'
           />
         </div>
       </Accordion.Panel>

@@ -15,8 +15,8 @@ export const series = [
     color: 'red.2'
   },
   { name: 'costsRecovered', label: 'Costs Recovered', color: 'red.1' },
-  { name: 'companyShare', label: 'Moncoeur Share', color: 'orange.6' },
-  { name: 'partnerShare', label: 'Artist Share', color: 'green.4' }
+  { name: 'companyShare', label: 'Company Share', color: 'orange.6' },
+  { name: 'partnerShare', label: 'Partner Share', color: 'green.4' }
 ] satisfies LineChartSeries[]
 
 export type SeriesNames = (typeof series)[number]['name']

@@ -53,11 +53,11 @@ export const calculateSeries = (settings: ChartSettings) => {
     const haspartnerDiscount = !!milestone?.partnerDiscount
     const hascompanyDiscount = !!milestone?.companyDiscount
 
-    // if the artist provided a discount, but moncoeur did not, we need to reduce the artist share by that amount and add it to the moncoeur share
+    // if the partner provided a discount, but the company did not, we need to reduce the partner share by that amount and add it to the company share
     const partnerDiscountComponent = haspartnerDiscount
       ? rawpartnerShare * milestone.partnerDiscount
       : 0
-    // if moncoeur provided a discount, but the artist did not, we need to reduce the moncoeur share by that amount and add it to the artist share
+    // if the company provided a discount, but the partner did not, we need to reduce the company share by that amount and add it to the parner share
     const companyDiscountComponent = hascompanyDiscount
       ? rawcompanyShare * milestone.companyDiscount
       : 0
