@@ -3,6 +3,10 @@
 import { filter, last, sum } from 'ramda'
 import { ChartSettings, Milestone } from './chart-settings'
 import { SeriesNames } from './constants'
+import {
+  isEvenDistributionPreviouslySet,
+  isUsingEvenDistribution
+} from '@/Components/Controls/MilestoneSettings/milestoneTools'
 
 type OtherKeys = 'saleNumber' | 'milestoneId'
 
@@ -16,10 +20,14 @@ export const calculateSeries = (settings: ChartSettings) => {
     { length: settings.numItemsToSell },
     (_, i) => i + 1
   )
-  console.log('recalculate', settings)
+
   const data = newArray.reduce<SeriesData[]>((acc, saleNumber) => {
     const previous = last(acc)
     const milestone = getMileStone(saleNumber, previous, settings)
+
+    if (!milestone) {
+      return acc
+    }
 
     // Revenue is the sale price minus any discounts
     const revenue =
@@ -88,7 +96,6 @@ export const calculateSeries = (settings: ChartSettings) => {
     }
     return [...acc, thedata]
   }, [])
-
   return data
 }
 
@@ -96,18 +103,25 @@ function calculateCostComponent(
   saleNumber: number,
   previous: SeriesData | undefined,
   settings: ChartSettings,
-  milestone?: Milestone
+  milestone: Milestone
 ): number {
   // if we've already recouped all costs, we don't need to calculate anything
   if ((previous?.costsRecovered || 0) >= settings.totalProjectCosts) {
     return 0
   }
 
-  if (milestone?.basis === 'costs' && milestone.evenDistribution) {
+  const useEvenDistribution =
+    isUsingEvenDistribution(milestone) ||
+    isEvenDistributionPreviouslySet(milestone, settings.milestones)
+
+  if (useEvenDistribution) {
     // we divide the costs up evenly across the remaining sales up to allCostsRecoupedBy
     const remainingCosts =
       settings.totalProjectCosts - (previous?.costsRecovered || 0)
-    const remainingSales = settings.allCostsRecoupedBy - saleNumber + 1
+    const remainingSales =
+      settings.allCostsRecoupedBy -
+      Math.max(saleNumber, settings.allCostsRecoupedBy) +
+      1
     return remainingCosts / remainingSales
   }
 
@@ -125,11 +139,10 @@ function getMileStone(
 ): Milestone | undefined {
   const { milestones } = settings
   const previousMilestoneId = previous?.milestoneId || 0
-  const nextMilestoneId = previousMilestoneId + 1
-  const nextMilestone = milestones[nextMilestoneId]
+  const nextMilestone = milestones[previousMilestoneId + 1]
 
   if (!nextMilestone) {
-    // There is no next milestone. The previous one applies.
+    // There is no next milestone. The previous one still applies.
     return milestones[previousMilestoneId]
   }
 

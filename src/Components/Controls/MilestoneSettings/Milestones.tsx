@@ -1,6 +1,6 @@
 'use client'
-import { PencilSquareIcon, PlusIcon } from '@heroicons/react/24/outline'
-import { Select, Switch, TextInput } from '@mantine/core'
+import { PencilSquareIcon } from '@heroicons/react/24/outline'
+import { Select, TextInput } from '@mantine/core'
 import { useState } from 'react'
 import {
   BasisOptions,
@@ -11,6 +11,8 @@ import {
 } from '../../../lib/chart-settings'
 import { ValueSlider } from '@/Components/Shared/ValueSlider'
 import { AddMilestone } from './AddMilestone'
+import { CostComponentSlider } from './CostComponentSlider'
+import { MilestoneMenu } from './MilestoneMenu'
 
 export function Milestones() {
   const { milestones } = chartSettings()
@@ -36,11 +38,9 @@ function MilestoneItemSettings({ milestone }: { milestone: Milestone }) {
   const usingEvenDistribution =
     milestone.basis === 'costs' && milestone.evenDistribution
 
-  const updateMilestone = (value: Partial<Milestone>) => {
-    saveMilestone({ ...milestone, ...value } as Milestone)
-  }
-
   if (!milestone) return null
+
+  const isInitialMilestone = milestone.milestoneNumber === 0
 
   return (
     <div
@@ -49,56 +49,46 @@ function MilestoneItemSettings({ milestone }: { milestone: Milestone }) {
     >
       {!editName ? (
         <div className='flex items-center gap-2 font-bold'>
-          {`${milestone.milestoneNumber + 1}: ${milestone.label}`}
+          <MilestoneMenu milestone={milestone} />
+          <p className='max-w-44 truncate'>
+            {`${milestone.milestoneNumber + 1}: ${milestone.label}`}
+          </p>
           <PencilSquareIcon
             onClick={() => setEditName(true)}
             className=' w-4'
           />
+          {isInitialMilestone && (
+            <p className='grow text-end text-xs font-light italic text-gray-500'>
+              initial settings
+            </p>
+          )}
         </div>
       ) : (
         <TextInput
           defaultValue={milestone.label}
           onBlur={event => {
-            updateMilestone({ label: event.currentTarget.value })
+            saveMilestone({ ...milestone, label: event.currentTarget.value })
             setEditName(false)
           }}
         />
       )}
-      <MilestoneBasisSettings
-        milestone={milestone}
-        updateMilestone={updateMilestone}
-      />
-      <hr />
+      {!isInitialMilestone && (
+        <>
+          <MilestoneBasisSettings
+            milestone={milestone}
+            updateMilestone={saveMilestone}
+          />
+          <hr />
+        </>
+      )}
       <div className='flex flex-col gap-2'>
-        {milestone.basis === 'costs' && (
-          <Switch
-            label='Distribute remaining costs evenly'
-            checked={milestone.basis === 'costs' && milestone.evenDistribution}
-            onChange={event =>
-              updateMilestone({
-                evenDistribution: event.currentTarget.checked
-              })
-            }
-          />
-        )}
-        {!usingEvenDistribution && (
-          <ValueSlider
-            value={milestone.costComponent}
-            onChange={value => {
-              updateMilestone({ costComponent: value })
-            }}
-            min={0} // the total number of items minus
-            max={1}
-            step={0.01}
-            label={value => `${(value * 100).toFixed(0)}%`}
-            title='Cost Component'
-          />
-        )}
+        <CostComponentSlider milestone={milestone} />
       </div>
       <ValueSlider
         value={milestone.partnerShare}
         onChange={value => {
-          updateMilestone({
+          saveMilestone({
+            ...milestone,
             partnerShare: value,
             companyShare: 1 - value
           })
@@ -125,69 +115,72 @@ function MilestoneBasisSettings({
   updateMilestone
 }: {
   milestone: Milestone
-  updateMilestone: (value: Partial<Milestone>) => void
+  updateMilestone: (value: Milestone) => void
 }) {
   const settings = chartSettings()
   const [basisType, setBasisType] = useState(
     typeof milestone.basisPercentage === 'number' ? 'percentage' : 'fixed value'
   )
 
-  const hideBasisEntry = Boolean(
-    milestone.basis === 'costs' && milestone.evenDistribution
-  )
-
   const [valueMin, valueMax] = getMinMax(milestone, settings)
 
   return (
-    <>
+    <div>
+      Milestone triggered at...
       <Select
         label='Milestone Basis'
         data={[...basisOptions]}
         value={milestone.basis}
         onChange={value => {
           if (value) {
-            updateMilestone({ basis: value as BasisOptions })
+            updateMilestone({ ...milestone, basis: value as BasisOptions })
           }
         }}
       />
-      {!hideBasisEntry ? (
-        <>
-          <Select
-            label='as'
-            data={['percentage', 'fixed value']}
-            value={basisType}
+      <>
+        <Select
+          label='as'
+          data={['percentage', 'fixed value']}
+          value={basisType}
+          onChange={value => {
+            if (value) {
+              setBasisType(value)
+            }
+          }}
+        />
+        {basisType === 'percentage' ? (
+          <ValueSlider
+            value={milestone.basisPercentage}
+            label={value => `${(value * 100).toFixed(0)}%`}
+            min={0}
+            max={1}
+            step={0.01}
+            title={'Percentage'}
             onChange={value => {
-              if (value) {
-                setBasisType(value)
-              }
+              updateMilestone({
+                ...milestone,
+                basisTotal: undefined,
+                basisPercentage: value
+              })
             }}
           />
-          {basisType === 'percentage' ? (
-            <ValueSlider
-              value={milestone.basisPercentage}
-              label={value => `${(value * 100).toFixed(0)}%`}
-              min={0}
-              max={1}
-              step={0.01}
-              title={'Percentage'}
-              onChange={value => {
-                updateMilestone({ basisPercentage: value })
-              }}
-            />
-          ) : (
-            <ValueSlider
-              value={milestone.basisTotal}
-              min={valueMin}
-              max={valueMax}
-              title='Set Value'
-              onChange={value => {
-                updateMilestone({ basisTotal: value })
-              }}
-            />
-          )}
-        </>
-      ) : null}
-    </>
+        ) : (
+          <ValueSlider
+            value={milestone.basisTotal}
+            min={valueMin}
+            max={valueMax}
+            title='Set Value'
+            onChange={value => {
+              updateMilestone({
+                ...milestone,
+                basisPercentage: undefined,
+                basisTotal: value
+              })
+            }}
+          />
+        )}
+      </>
+    </div>
   )
 }
 function getMinMax(

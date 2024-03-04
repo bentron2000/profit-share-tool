@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { TextInput, Textarea } from '@mantine/core'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { chartSettings } from '@/lib/chart-settings'
-import { ChartModal } from '../../Shared/ChartModalProps'
+import { ChartModal } from '../../Shared/ChartModal'
 
 export function CreateNewScenario() {
   const settings = chartSettings()

@@ -28,7 +28,7 @@ export const DEFAULT_MILESTONE = {
     milestoneNumber: 0,
     label: 'Starting Milestone',
     basis: 'sales',
-    basisTotal: 1,
+    basisTotal: 0,
     costComponent: 1,
     partnerShare: 0,
     companyShare: 1,

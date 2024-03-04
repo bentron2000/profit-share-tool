@@ -28,6 +28,7 @@ export interface ChartSettings {
   setallCostsRecoupedBy: (milestone: number) => void
   milestones: Record<number, Milestone>
   saveMilestone: (milestone: Milestone) => void
+  deleteMilestone: (milestone: Milestone) => void
   dataToDisplay: string[]
   setDataToDisplay: (data: string[]) => void
   createNewSettings: (name: string, description: string) => void
@@ -39,19 +40,24 @@ export interface ChartSettings {
   id: string
   description: string
 }
-type BasisValue = {
-  basisPercentage: number
-  basisTotal: number
-}
+type BasisValue = RequireExactlyOne<
+  {
+    basisPercentage: number
+    basisTotal: number
+  },
+  'basisPercentage' | 'basisTotal'
+>
 type SalesBasis = {
   basis: 'sales'
-} & RequireExactlyOne<BasisValue>
+} & BasisValue
+
 type RevenueBasis = {
   basis: 'revenue'
-} & RequireExactlyOne<BasisValue>
+} & BasisValue
+
 type CostBasis = {
   basis: 'costs'
-} & RequireExactlyOne<BasisValue> & { evenDistribution?: boolean }
+} & BasisValue
 interface MilestoneData {
   milestoneNumber: number
   label: string
@@ -61,6 +67,7 @@ interface MilestoneData {
   sharedDiscount: number
   partnerDiscount: number
   companyDiscount: number
+  evenDistribution?: boolean
 }
 
 export const basisOptions = ['sales', 'revenue', 'costs'] as const
@@ -82,6 +89,23 @@ export const chartSettings = create<ChartSettings>()(
     allCostsRecoupedBy: DEFAULT_NUM_ITEMS,
     setallCostsRecoupedBy: milestone => set({ allCostsRecoupedBy: milestone }),
     milestones: DEFAULT_SETTINGS.milestones,
+    deleteMilestone: milestone => {
+      // get all the milestones, remove this one, then modify the indexes of the remainder so that there are no gaps
+      const settings = get()
+      const newMilestones = { ...settings.milestones }
+      delete newMilestones[milestone.milestoneNumber]
+      const updatedMilestones = Object.values(newMilestones).reduce(
+        (acc, milestone, index) => {
+          return {
+            ...acc,
+            [index]: milestone
+          }
+        },
+        {}
+      )
+      set({ milestones: updatedMilestones })
+      get().saveSettings({ ...settings, milestones: updatedMilestones })
+    },
     saveMilestone: milestone => {
       const oldMilstones = get().milestones
       const updatedMilestones = {

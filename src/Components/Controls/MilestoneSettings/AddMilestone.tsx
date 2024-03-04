@@ -1,5 +1,5 @@
 import { PlusIcon } from '@heroicons/react/24/outline'
-import { ChartModal } from '../../Shared/ChartModalProps'
+import { ChartModal } from '../../Shared/ChartModal'
 import { TextInput } from '@mantine/core'
 import { chartSettings } from '@/lib/chart-settings'
 import { useState } from 'react'
@@ -32,7 +32,7 @@ export function AddMilestone() {
           Ok
         </button>
       )}
-      buttonClassNames=''
+      buttonClassNames=' grow-0 ring-0'
       icon={<PlusIcon className='w-5' />}
       modalTitle='Add Milestone'
     >

@@ -17,7 +17,7 @@ export default function ChartPage() {
   const data = useMemo(() => calculateSeries(settings), [settings])
 
   const referenceLines = useMemo(
-    () => milestonesToReferenceLines(data)(settings),
+    () => milestonesToReferenceLines(data, settings),
     [data, settings]
   )
 
