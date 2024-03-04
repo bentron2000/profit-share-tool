@@ -3,10 +3,7 @@
 import { filter, last, sum } from 'ramda'
 import { ChartSettings, Milestone } from './chart-settings'
 import { SeriesNames } from './constants'
-import {
-  isEvenDistributionPreviouslySet,
-  isUsingEvenDistribution
-} from '@/Components/Controls/MilestoneSettings/milestoneTools'
+import { isEvenDistributionPreviouslySet } from '@/Components/Controls/MilestoneSettings/milestoneTools'
 
 type OtherKeys = 'saleNumber' | 'milestoneId'
 
@@ -111,17 +108,15 @@ function calculateCostComponent(
   }
 
   const useEvenDistribution =
-    isUsingEvenDistribution(milestone) ||
+    milestone.evenDistribution ||
     isEvenDistributionPreviouslySet(milestone, settings.milestones)
 
   if (useEvenDistribution) {
     // we divide the costs up evenly across the remaining sales up to allCostsRecoupedBy
     const remainingCosts =
       settings.totalProjectCosts - (previous?.costsRecovered || 0)
-    const remainingSales =
-      settings.allCostsRecoupedBy -
-      Math.max(saleNumber, settings.allCostsRecoupedBy) +
-      1
+    const remainingSales = settings.allCostsRecoupedBy - saleNumber
+
     return remainingCosts / remainingSales
   }
 
@@ -163,9 +158,7 @@ function getMileStone(
 
   if (nextMilestone.basis === 'costs') {
     const costsRecouped = previous?.costsRecovered || 0
-    if (nextMilestone.evenDistribution) {
-      return nextMilestone
-    }
+
     if (
       typeof nextMilestone.basisTotal === 'number' &&
       costsRecouped >= nextMilestone.basisTotal

@@ -18,8 +18,8 @@ export function LoadSave() {
   }, [loadSettings])
 
   return (
-    <div className='flex flex-col gap-2 rounded-lg p-4 ring-1'>
-      <h2 className='text-lg font-semibold'>Scenario Controls</h2>
+    <div className='flex flex-col gap-3 rounded-lg p-2 ring-1'>
+      <h2 className='text-lg font-semibold'>Scenario</h2>
       <div className='flex items-end'>
         <SelectSavedScenario />
         <EditNameDescription />

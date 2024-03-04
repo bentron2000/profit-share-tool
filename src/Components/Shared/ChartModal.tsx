@@ -1,11 +1,11 @@
 'use client'
 import React from 'react'
 import { PropsWithChildren } from 'react'
-import { Modal } from '@mantine/core'
+import { Modal, ModalProps } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { cn } from '@/lib/utils'
 
-interface ChartModalProps {
+interface ChartModalProps extends Omit<ModalProps, 'opened' | 'onClose'> {
   icon: React.ReactNode
   // footer: a render prop function that gives the close function as a parameter returns a React.ReactNode
   footer: (close: () => void) => React.ReactNode
@@ -22,7 +22,8 @@ export function ChartModal({
   footer,
   children,
   buttonClassNames,
-  disabled
+  disabled,
+  ...props
 }: PropsWithChildren<ChartModalProps>) {
   const [opened, { open, close }] = useDisclosure(false)
   return (

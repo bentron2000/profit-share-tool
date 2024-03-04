@@ -10,11 +10,5 @@ export const isEvenDistributionPreviouslySet = (
   milestones: Record<number, Milestone>
 ) =>
   !!Object.values(milestones).find(
-    m =>
-      m.milestoneNumber < milestone.milestoneNumber &&
-      m.basis === 'costs' &&
-      m.evenDistribution
+    m => m.milestoneNumber < milestone.milestoneNumber && m.evenDistribution
   )
-
-export const isUsingEvenDistribution = (milestone: Milestone) =>
-  milestone.basis === 'costs' && milestone.evenDistribution
