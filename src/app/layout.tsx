@@ -41,7 +41,7 @@ export default function RootLayout({
           <Notifications />
           <div className='flex h-screen'>
             <div className='w-96'>{controls}</div>
-            <div className='grow '>{chart}</div>
+            <div className='grow'>{chart}</div>
           </div>
         </MantineProvider>
       </body>
