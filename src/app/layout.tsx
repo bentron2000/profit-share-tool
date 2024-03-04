@@ -39,9 +39,9 @@ export default function RootLayout({
       <body>
         <MantineProvider theme={theme}>
           <Notifications />
-          <div className='flex h-screen'>
-            <div className='w-96'>{controls}</div>
-            <div className='grow'>{chart}</div>
+          <div className='flex'>
+            <div className='h-screen w-96'>{controls}</div>
+            <div className='h-screen grow overflow-hidden'>{chart}</div>
           </div>
         </MantineProvider>
       </body>

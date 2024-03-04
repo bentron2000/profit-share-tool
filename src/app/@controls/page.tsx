@@ -11,7 +11,7 @@ import { ScrollArea } from '@mantine/core'
 
 export default function ControlsPage() {
   return (
-    <ScrollArea>
+    <ScrollArea h='100vh'>
       <div className='flex flex-col gap-5 p-3'>
         <h1 className='text-2xl font-bold'>Profit Share Visualiser</h1>
         <LoadSave />

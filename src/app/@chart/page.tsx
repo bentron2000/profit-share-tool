@@ -8,6 +8,7 @@ import { dataKey, series } from '../../lib/constants'
 import { milestonesToReferenceLines } from '../../lib/reference-lines'
 import { ChartSettings } from '@/Components/ChartSettings'
 import { ResultInfo } from '@/Components/ResultInfo'
+import { ResponsiveContainer } from 'recharts'
 
 export default function ChartPage() {
   noStore()
@@ -28,21 +29,22 @@ export default function ChartPage() {
         <ChartSettings />
       </div>
       <div className='flex w-4/5 flex-col gap-8'>
-        <LineChart
-          h={700}
-          data={data}
-          dataKey={dataKey}
-          withLegend
-          series={series.filter(item =>
-            settings.dataToDisplay.includes(item.name)
-          )}
-          dotProps={{ r: 0 }}
-          referenceLines={referenceLines}
-          curveType='linear'
-          valueFormatter={value =>
-            `$${new Intl.NumberFormat('en-AU').format(value)}`
-          }
-        />
+        <ResponsiveContainer height={'75vh'}>
+          <LineChart
+            data={data}
+            dataKey={dataKey}
+            withLegend
+            series={series.filter(item =>
+              settings.dataToDisplay.includes(item.name)
+            )}
+            dotProps={{ r: 0 }}
+            referenceLines={referenceLines}
+            curveType='linear'
+            valueFormatter={value =>
+              `$${new Intl.NumberFormat('en-AU').format(value)}`
+            }
+          />
+        </ResponsiveContainer>
         <ResultInfo />
       </div>
     </div>
