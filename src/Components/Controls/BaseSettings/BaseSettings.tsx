@@ -11,6 +11,9 @@ export function BaseSettings() {
       <ItemPriceSlider />
       <ProjectCostsSlider />
       <Milestones />
+      <div className='justify-cengter inline-flex h-32 w-32 items-center bg-pink-400 p-3 text-center text-white'>
+        Box styled with tailwind
+      </div>
     </div>
   )
 }
