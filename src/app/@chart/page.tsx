@@ -24,10 +24,7 @@ export default function ChartPage() {
 
   return (
     <div className='p-3'>
-      <div className='flex gap-3'>
-        Chart
-        <ChartSettings />
-      </div>
+      <ChartSettings />
       <div className='flex w-4/5 flex-col gap-8 p-2'>
         <ResponsiveContainer height={'75vh'}>
           <LineChart

@@ -9,7 +9,10 @@ export function ChartSettings() {
   return (
     <Menu closeOnClickOutside closeOnItemClick={false}>
       <Menu.Target>
-        <WrenchScrewdriverIcon className='w-5' />
+        <div className='inline-flex flex-row gap-2 rounded-md p-2 ring-1'>
+          <WrenchScrewdriverIcon className='w-5' />
+          Chart Settings
+        </div>
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Label>Settings</Menu.Label>
