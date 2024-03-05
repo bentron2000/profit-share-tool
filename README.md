@@ -1,5 +1,9 @@
 A little tool to visualise some simple profit share scenarios between two business entities when selling items.
 
+
+![image](https://github.com/bentron2000/profit-share-tool/assets/5344375/ae1ebd1e-c32a-4556-a28a-23f5ba3438c7)
+
+
 ## Getting Started
 
 Install dependencies and run the development server:
