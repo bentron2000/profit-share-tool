@@ -116,6 +116,7 @@ function RenameMilestoneModal({
       <div className='mt-3 flex flex-col gap-3'>
         <TextInput
           label='Rename Milestone'
+          defaultValue={milestone.label}
           placeholder={milestone.label}
           ref={ref}
         />

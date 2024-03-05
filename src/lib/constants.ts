@@ -5,7 +5,7 @@ import { prop } from 'ramda'
 export const series = [
   {
     name: 'revenue',
-    label: 'Revenue',
+    label: 'Total Revenue',
     color: 'indigo.4',
     strokeDasharray: '3 7'
   },
@@ -16,8 +16,14 @@ export const series = [
   },
   { name: 'costsRecovered', label: 'Costs Recovered', color: 'red.1' },
   { name: 'companyShare', label: 'Company Share', color: 'orange.6' },
-  { name: 'partnerShare', label: 'Partner Share', color: 'green.4' }
-] satisfies LineChartSeries[]
+  { name: 'partnerShare', label: 'Partner Share', color: 'green.4' },
+  { name: 'grossMargin', label: 'Gross Margin', color: 'blue.2' },
+  {
+    name: 'companyComponent',
+    label: 'Gross Company Revenue',
+    color: 'orange.4'
+  }
+] as const satisfies LineChartSeries[]
 
 export type SeriesNames = (typeof series)[number]['name']
 

@@ -28,7 +28,7 @@ export default function ChartPage() {
         Chart
         <ChartSettings />
       </div>
-      <div className='flex w-4/5 flex-col gap-8'>
+      <div className='flex w-4/5 flex-col gap-8 p-2'>
         <ResponsiveContainer height={'75vh'}>
           <LineChart
             data={data}
@@ -38,6 +38,7 @@ export default function ChartPage() {
               settings.dataToDisplay.includes(item.name)
             )}
             dotProps={{ r: 0 }}
+            yAxisProps={{ domain: [0, 'dataMax'] }}
             referenceLines={referenceLines}
             curveType='linear'
             valueFormatter={value =>
@@ -45,7 +46,7 @@ export default function ChartPage() {
             }
           />
         </ResponsiveContainer>
-        <ResultInfo />
+        <ResultInfo data={data} />
       </div>
     </div>
   )

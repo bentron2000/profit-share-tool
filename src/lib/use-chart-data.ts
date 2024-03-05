@@ -74,7 +74,14 @@ export const calculateSeries = (settings: ChartSettings) => {
 
     const costsRemaining = previous?.costsRemaining
       ? previous.costsRemaining - costComponent
-      : settings.totalProjectCosts
+      : settings.totalProjectCosts - costComponent
+
+    const costsRecovered = previous?.costsRecovered
+      ? previous.costsRecovered + costComponent
+      : costComponent
+
+    const companyComponent =
+      (previous?.companyComponent || 0) + netcompanyShare + costComponent
 
     const thedata = {
       saleNumber,
@@ -89,7 +96,11 @@ export const calculateSeries = (settings: ChartSettings) => {
       companyShare: previous?.companyShare
         ? previous.companyShare + netcompanyShare
         : netcompanyShare,
-      milestoneId: milestone?.milestoneNumber || 0
+      milestoneId: milestone?.milestoneNumber || 0,
+      grossMargin: previous?.grossMargin
+        ? grossMargin + previous?.grossMargin
+        : grossMargin,
+      companyComponent
     }
     return [...acc, thedata]
   }, [])
@@ -121,6 +132,9 @@ function calculateCostComponent(
   }
 
   // otherwise, we calculate the cost component based on the cost component of the milestone
+  if (saleNumber === 1) {
+    console.log('milestone', milestone)
+  }
   return settings.salePrice * (milestone?.costComponent || 0)
 }
 
